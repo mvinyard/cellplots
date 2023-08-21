@@ -23,6 +23,10 @@ class PlotDimensions(ABCParse.ABCParse):
     def __init__(
         self,
         rcParams_key="figure.figsize",
+        ncols: int = 1,
+        nrows: int = 1,
+        width: float = 1.0,
+        height: float = 1.0,
         *args,
         **kwargs,
     ) -> None:
@@ -90,7 +94,4 @@ class PlotDimensions(ABCParse.ABCParse):
         return self.width, self.height
 
     def __repr__(self) -> str:
-        try:
-            return f"Plot size: {self.width} x {self.height} (inches)"
-        except:
-            return f"Plot size: {self._DEFAULT_WIDTH} x {self._DEFAULT_HEIGHT} (inches)"
+        return f"Plot size: {self.width} x {self.height} (inches)"
