@@ -1,2 +1,2 @@
-# getzlab-pyplots
-A possible plotting assistant and resource for members of the Getz Lab. 
+# cell-pyplots
+A plotting assistant and resource for those working with single-cell and/or genomics data.
