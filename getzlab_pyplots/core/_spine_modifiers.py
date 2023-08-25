@@ -95,24 +95,128 @@ class AxSpineModifier(ABCParse.ABCParse):
     Container modifier to control all above modifiers for a single ax.
     """
     
-    def __init__(self):
+    def __init__(self, *args, **kwargs)->None:
+        
+        """
+        Parameters
+        ----------
+        
+        Returns
+        -------
+        None
+        """
+    
         self._DELETE = SpineDeleter()
         self._COLOR = SpineColorModifier()
         self._POSITION = SpinePositionModifier()
+    
+    
+    # -- Spine repositioning functions: ----------------------------------------
+    def reposition(self, ax: plt.Axes, spines: List = [], position: List[Tuple[str, float]] = ())->None:
+        
+        """
+        Parameters
+        ----------
+        ax: plt.Axes
+        
+        spines: List[str], default = []
+            Include any or all of ['top', 'bottom', 'left', 'right']
+            
+        position: List[Tuple[str, float]], default = [()]
+            
+        Returns
+        -------
+        None
+        """
+        
+        self._POSITION(ax, **{i:j for i, j in zip(spines, position)})
 
-    def forward(self, ax, mod):
+    # -- Spine color functions: ------------------------------------------------
+    def color(self, ax: plt.Axes, spines: List  = [], colors: List = [])->None:
+        
+        """
+        Parameters
+        ----------
+        ax: plt.Axes
+        
+        spines: List[str], default = []
+            Include any or all of ['top', 'bottom', 'left', 'right']
+            
+        colors: List[str], default = []
+            Colors corresponding in respective order to the passed list of spines.
+            
+        Returns
+        -------
+        None
+        """
+        
+        self._COLOR(ax, **{i:j for i, j in zip(spines, colors)})    
+    
+    # -- Spine deleting functions: ---------------------------------------------
+    def delete(self, ax: plt.Axes, spines: List[str] = [], all_spines: bool = False)->None:
+        
+        """
+        Parameters
+        ----------
+        ax: plt.Axes
+        
+        spines: List[str], default = []
+            Include any or all of ['top', 'bottom', 'left', 'right']
+            
+        all_spines: bool, default = False
+            If True, delete all spines of ax.
+            
+        Returns
+        -------
+        None, deletes indicated spines.
+        """        
+        if all_spines:
+            self.delete_all(ax)
+        self._DELETE(ax, **{spine: True for spine in spines})
+        
+    def delete_all(self, ax: plt.Axes)->None:
+        """
+        Parameters
+        ----------
+        ax
+        
+        Returns
+        -------
+        None, deletes all spines.
+        """
+        spines = ['top', 'bottom', 'right', 'left']
+        self._DELETE(ax, **{spine: True for spine in spines})
+        
+    def forward(self, ax: plt.Axes, mod: str)->None:
         if hasattr(self, f"_{mod}"):
             modifier = getattr(self, f"_{mod.upper()}")
             PASSED = getattr(self, f"_{mod}")
             modifier(ax, **PASSED)
 
+    # -- Calling API: ----------------------------------------------------------
     def __call__(
         self,
         ax: plt.Axes,
         delete: Optional[Dict] = None,
         color: Optional[Dict] = None,
         position: Optional[Dict] = None,
-    ):
+    )->None:
+        """
+        Parameters
+        ----------
+        ax: plt.Axes [required]
+        
+        delete: Optional[Dict], default = None
+        
+        color: Optional[Dict], default = None
+        
+        position: Optional[Dict], default= None
+        
+        Returns
+        -------
+        None
+        """
+        
         self.__update__(locals(), public=[None])
 
         for mod in ["delete", "color", "position"]:
