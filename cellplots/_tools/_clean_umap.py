@@ -51,7 +51,7 @@ class CleanUMAP(ABCParse.ABCParse):
         return self.filtered_idx
 
 def clean_umap_coordinates(
-    adata: anndata.AnnData, use_key: str = "X_umap", n_stdev: int = 3,
+    adata: anndata.AnnData, use_key: str = "X_umap", n_stdev: float = 3.5,
 ) -> np.ndarray:
 
     """
