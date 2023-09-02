@@ -2,6 +2,7 @@
 
 # -- import packages: ----------------------------------------------------------
 import ABCParse
+import matplotlib.pyplot as plt
 
 
 # -- import local dependencies: ------------------------------------------------
@@ -40,7 +41,7 @@ def plot(
     position: Optional[List[Dict[str, List[Tuple[str, float]]]]] = [{}],
     *args,
     **kwargs,
-):
+) -> Tuple[plt.Figure, List[plt.Axes]]:
     """
     Parameters
     ----------
@@ -96,11 +97,11 @@ def plot(
 
     Returns
     -------
-    figure: cellplots.BaseFigureContainer
+    (fig, axes): Tuple[plt.Figure, List[plt.Axes]]
     """
 
     KWARGS = ABCParse.function_kwargs(func=BaseFigureContainer, kwargs=locals())
     figure = BaseFigureContainer(**KWARGS)
     figure._configure_canvas(**figure._CANVAS_KWARGS)
 
-    return figure
+    return figure.fig, figure.axes
