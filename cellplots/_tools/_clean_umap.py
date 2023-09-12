@@ -37,9 +37,10 @@ class CleanUMAP(ABCParse.ABCParse):
 
     @property
     def filtered_idx(self):
-
-        x_filt = np.abs(self.xu[:, 0].toarray() - self.x_mu) < self.x_sigma
-        y_filt = np.abs(self.xu[:, 1].toarray() - self.y_mu) < self.y_sigma
+        
+        x_filt = np.abs(self.xu[:, 0] - self.x_mu) < self.x_sigma
+        y_filt = np.abs(self.xu[:, 1] - self.y_mu) < self.y_sigma
+        
         return np.all([x_filt, y_filt], axis=0)
 
     def __call__(self, xu: np.ndarray):

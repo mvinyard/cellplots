@@ -7,3 +7,4 @@ from . import core
 from . import _tools as tl
 
 from .core._plot import plot
+from .core._umap import umap, umap_manifold

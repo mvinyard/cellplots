@@ -9,6 +9,6 @@ from ._ax_labels import AxLabels
 from ._base_figure_container import BaseFigureContainer
 from ._group_count_zorder import GroupCountZOrder
 
-from ._grouped_background_umap_manifold import GroupedBackgroundUMAPManifold, grouped_background_umap_manifold
-from ._umap import UMAP
+# from ._grouped_background_umap_manifold import GroupedBackgroundUMAPManifold, grouped_background_umap_manifold
+from ._umap import BaseUMAP, UMAP, umap, umap_manifold
 from ._plot import plot
