@@ -3,6 +3,7 @@
 # -- import libraries: --------------------------------------------------------
 from abc import abstractmethod
 import matplotlib.pyplot as plt
+import pandas as pd
 import numpy as np
 import anndata
 import adata_query
@@ -97,12 +98,6 @@ class UMAP(BaseUMAP):
         return matplotlib.rcParams["lines.markersize"] ** 2
     
     @property
-    def c(self):
-        if hasattr(self, "_c"):
-            return self._c
-        return "lightgrey"
-
-    @property
     def _HIGHEST_PLOTTED_ZORDER(self):
         return max([self._get_highest_zorder(ax) for ax in self.axes])
 
@@ -139,15 +134,28 @@ class UMAP(BaseUMAP):
         return self._HIGHEST_PLOTTED_ZORDER + 1 + self._zorder_boost
 
     @property
+    def _quantitatively_colored(self) -> bool:
+        return any(
+            [
+                isinstance(self._PARAMS["c"], type_check)
+                for type_check in [pd.Series, np.ndarray, List]
+            ]
+        )
+    
+    @property
     def _CMAP(self):
-        if "c" in self._PARAMS and isinstance(self._PARAMS["c"], str):
-            return {"c": self._PARAMS["c"]}
-        if hasattr(self, "_cmap") and (not self._GROUPED):
-            numerical_cmap = {"cmap": self._cmap}
-            for attr in ["c", "vmin", "vmax"]:
-                if attr in self._PARAMS:
-                    numerical_cmap[attr] = self._PARAMS[attr]
-            return numerical_cmap
+
+        if "c" in self._PARAMS:
+            if isinstance(self._PARAMS["c"], str):
+                return {"c": self._PARAMS["c"]}
+            elif self._quantitatively_colored:
+                numerical_cmap = {}
+                for attr in ["c", "vmin", "vmax", "cmap"]:
+                    if attr in self._PARAMS:
+                        numerical_cmap[attr] = self._PARAMS[attr]
+                return numerical_cmap
+            
+        # if hasattr(self, "_cmap") and (not self._GROUPED):
         if hasattr(self, "_cmap") and isinstance(self._cmap, Dict):
             return {"c": self._cmap[self._CURRENT_LABEL]}
         return {"c": "lightgrey"} # {}
@@ -231,7 +239,7 @@ class UMAP(BaseUMAP):
         for en, (label, X_umap) in enumerate(self._GROUPED_DATA.items()):
             self.forward(X_umap, en=en, label=label)
 
-        return self._format_return()
+        return self.axes # self._format_return()
     
 # -- API-facing function: ----
 def umap(
@@ -265,6 +273,7 @@ def umap(
         *args,
         **kwargs,
     )
+    return umap_figure.axes
 
     
 def umap_manifold(
@@ -275,6 +284,9 @@ def umap_manifold(
     s_background=120,
     s_cover=60,
     clean_stdev=3,
+    ax = None,
+    *args,
+    **kwargs
 ):
 
     if isinstance(c_background, str):
@@ -282,8 +294,8 @@ def umap_manifold(
     elif isinstance(c_background, Dict):
         kwargs = {"cmap": c_background}
 
-    umap_figure = UMAP()
-    fig, axes = umap_figure(
+    umap_figure = UMAP(ax = ax)
+    axes = umap_figure(
         adata=adata,
         groupby=groupby,
         alpha=1,
@@ -291,12 +303,15 @@ def umap_manifold(
         clean_stdev=clean_stdev,
         **kwargs
     )
+        
     zorder_boost = int(umap_figure._HIGHEST_PLOTTED_ZORDER + 1)
-
+    
+    updated_axes = []
     for ax in axes:
         umap_figure_cover = UMAP(ax=ax, zorder_boost=zorder_boost)
-        axes = umap_figure_cover(
+        ax_ = umap_figure_cover(
             adata, groupby=groupby, c=c_cover, s=s_cover, clean_stdev=clean_stdev
-        )
+        )[0]
+        updated_axes.append(ax_)
 
-    return axes
+    return updated_axes
