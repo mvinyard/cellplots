@@ -279,6 +279,8 @@ def umap(
 def umap_manifold(
     adata,
     groupby=None,
+    nplots: int = 1,
+    ncols: int = 1,
     c_background="k",
     c_cover="w",
     s_background=120,
@@ -294,7 +296,7 @@ def umap_manifold(
     elif isinstance(c_background, Dict):
         kwargs = {"cmap": c_background}
 
-    umap_figure = UMAP(ax = ax)
+    umap_figure = UMAP(ax = ax, nplots = nplots, ncols = ncols)
     axes = umap_figure(
         adata=adata,
         groupby=groupby,
