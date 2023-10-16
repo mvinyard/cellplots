@@ -38,8 +38,8 @@ class CleanUMAP(ABCParse.ABCParse):
     @property
     def filtered_idx(self):
         
-        x_filt = np.abs(self.xu[:, 0] - self.x_mu) < self.x_sigma
-        y_filt = np.abs(self.xu[:, 1] - self.y_mu) < self.y_sigma
+        x_filt = np.abs(self._xu[:, 0] - self.x_mu) < self.x_sigma
+        y_filt = np.abs(self._xu[:, 1] - self.y_mu) < self.y_sigma
         
         return np.all([x_filt, y_filt], axis=0)
 
@@ -47,7 +47,7 @@ class CleanUMAP(ABCParse.ABCParse):
 
         self.__update__(locals())
 
-        self.mu, self.sigma = self.xu.mean(0), self.xu.std(0)
+        self.mu, self.sigma = self._xu.mean(0), self._xu.std(0)
 
         return self.filtered_idx
 
