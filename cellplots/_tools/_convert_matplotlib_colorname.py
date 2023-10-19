@@ -26,7 +26,7 @@ class MatplotlibColorNameConverter(ABCParse.ABCParse):
         return self._color
 
     def _to_hex(self, color_name):
-        return matplotlib.colors.mcolors.cnames.get(color_name, None)
+        return matplotlib.colors.cnames.get(color_name, None)
 
     def __call__(self, color: str, *args, **kwargs) -> str:
         self.__update__(locals(), public=[None])
