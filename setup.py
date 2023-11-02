@@ -11,7 +11,7 @@ setuptools.setup(
     version="0.0.1rc0",
     python_requires=">3.9.0",
     author="Michael E. Vinyard",
-    author_email="mvinyard@broadinstitute.org",
+    author_email="mvinyard.ai@gmail.com",
     url="https://github.com/mvinyard/cellplots",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
@@ -20,7 +20,7 @@ setuptools.setup(
     install_requires=[
         "matplotlib>=3.7.2",
         "pandas>=2.0.3",
-        "ABCParse>=0.0.6",
+        "ABCParse>=0.0.7rc0",
     ],
     classifiers=[
         "Development Status :: 2 - Pre-Alpha",
